@@ -10,6 +10,33 @@ class Prompt extends Model
     use HasFactory;
 
     /**
+     * Prompts que son padres de este prompt.
+     */
+    public function parents()
+    {
+        return $this->belongsToMany(
+            self::class,
+            'prompt_relations',
+            'child_prompt_id',
+            'parent_prompt_id'
+        );
+    }
+
+    /**
+     * Prompts que son hijos de este prompt.
+     */
+    public function children()
+    {
+        return $this->belongsToMany(
+            self::class,
+            'prompt_relations',
+            'parent_prompt_id',
+            'child_prompt_id'
+        );
+    }
+    use HasFactory;
+
+    /**
      * La tabla asociada con el modelo.
      *
      * @var string

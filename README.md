@@ -9,6 +9,7 @@ Un paquete Laravel minimalista para gestionar y anidar prompts de texto con sopo
 - **Variables personalizadas**: Soporte para variables en formato `::variable::`
 - **Normalización de nombres**: Los nombres de prompts se normalizan automáticamente para evitar duplicados
 - **Prompts de sistema**: Soporte para prompts que no se pueden eliminar accidentalmente
+- **Relaciones avanzadas entre prompts**: Un prompt puede tener múltiples padres y/o hijos, permitiendo estructuras complejas y reutilizables.
 - **Sin interfaz gráfica**: Diseñado para uso programático a través de un API simple
 - **Ligero y eficiente**: Implementación minimalista sin dependencias innecesarias
 
@@ -37,6 +38,37 @@ php artisan vendor:publish --provider="Luinuxscl\Prompts\PromptsServiceProvider"
 ```
 
 ## Uso básico
+
+### Relaciones avanzadas entre prompts (padres e hijos)
+
+Puedes asociar cualquier prompt a varios padres y/o hijos para crear estructuras complejas y reutilizables. Esto se logra mediante relaciones muchos-a-muchos autoreferenciales.
+
+#### Ejemplo básico de asociación:
+
+```php
+use Luinuxscl\Prompts\Models\Prompt;
+
+// Crear prompts
+$promptA = Prompt::create(['name' => 'A', 'content' => 'Prompt A']);
+$promptB = Prompt::create(['name' => 'B', 'content' => 'Prompt B']);
+$promptC = Prompt::create(['name' => 'C', 'content' => 'Prompt C']);
+
+// Asociar B y C como hijos de A
+$promptA->children()->attach([$promptB->id, $promptC->id]);
+
+// Asociar B como hijo de C también (B tiene dos padres: A y C)
+$promptC->children()->attach($promptB->id);
+
+// Consultar padres de B
+$parentsOfB = $promptB->parents; // Collection de prompts
+
+// Consultar hijos de A
+$childrenOfA = $promptA->children; // Collection de prompts
+```
+
+- Puedes usar `attach`, `detach`, `sync` y demás métodos estándar de relaciones many-to-many de Eloquent.
+- Las relaciones se gestionan automáticamente mediante la tabla pivote `prompt_relations`.
+- Puedes anidar y reutilizar prompts en cualquier estructura que requieras.
 
 ### Crear un prompt
 
