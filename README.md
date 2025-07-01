@@ -8,6 +8,7 @@ Un paquete Laravel minimalista para gestionar y anidar prompts de texto con sopo
 - **Anidamiento de prompts**: Capacidad para incluir prompts dentro de otros prompts
 - **Variables personalizadas**: Soporte para variables en formato `::variable::`
 - **Normalización de nombres**: Los nombres de prompts se normalizan automáticamente para evitar duplicados
+- **Prompts de sistema**: Soporte para prompts que no se pueden eliminar accidentalmente
 - **Sin interfaz gráfica**: Diseñado para uso programático a través de un API simple
 - **Ligero y eficiente**: Implementación minimalista sin dependencias innecesarias
 
@@ -47,6 +48,12 @@ Prompts::create('saludo', 'Hola, bienvenido a nuestra plataforma.');
 
 // Crear un prompt con descripción
 Prompts::create('despedida', 'Gracias por visitarnos.', 'Mensaje de despedida');
+
+// Crear un prompt de sistema (no se puede eliminar)
+Prompts::createSystem('terminos_servicio', 'Estos son los términos de servicio...');
+
+// También puedes marcar un prompt como sistema al crearlo
+Prompts::create('politica_privacidad', 'Nuestra política de privacidad...', null, true);
 ```
 
 ### Anidar prompts

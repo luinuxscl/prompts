@@ -25,6 +25,16 @@ class Prompt extends Model
         'name',
         'description',
         'content',
+        'is_system',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'is_system' => 'boolean',
     ];
 
     /**
@@ -36,5 +46,33 @@ class Prompt extends Model
     public static function findByName(string $name): ?self
     {
         return static::where('name', $name)->first();
+    }
+
+    /**
+     * Create a new system prompt.
+     *
+     * @param string $name
+     * @param string $content
+     * @param string|null $description
+     * @return self
+     */
+    public static function createSystem(string $name, string $content, ?string $description = null): self
+    {
+        return static::create([
+            'name' => $name,
+            'content' => $content,
+            'description' => $description,
+            'is_system' => true,
+        ]);
+    }
+
+    /**
+     * Determine if the prompt is a system prompt.
+     *
+     * @return bool
+     */
+    public function isSystem(): bool
+    {
+        return (bool) $this->is_system;
     }
 }

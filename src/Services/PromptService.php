@@ -57,7 +57,16 @@ class PromptService
      * @param string|null $description
      * @return \Luinuxscl\Prompts\Models\Prompt
      */
-    public function create(string $name, string $content, ?string $description = null)
+    /**
+     * Create a new prompt.
+     *
+     * @param string $name
+     * @param string $content
+     * @param string|null $description
+     * @param bool $isSystem
+     * @return \Luinuxscl\Prompts\Models\Prompt
+     */
+    public function create(string $name, string $content, ?string $description = null, bool $isSystem = false)
     {
         $normalizedName = $this->normalizeName($name);
         
@@ -66,8 +75,22 @@ class PromptService
             [
                 'content' => $content,
                 'description' => $description,
+                'is_system' => $isSystem,
             ]
         );
+    }
+    
+    /**
+     * Create a new system prompt.
+     *
+     * @param string $name
+     * @param string $content
+     * @param string|null $description
+     * @return \Luinuxscl\Prompts\Models\Prompt
+     */
+    public function createSystem(string $name, string $content, ?string $description = null)
+    {
+        return $this->create($name, $content, $description, true);
     }
 
     /**
@@ -76,7 +99,15 @@ class PromptService
      * @param string $name
      * @return bool
      */
-    public function delete(string $name): bool
+    /**
+     * Delete a prompt by name.
+     *
+     * @param string $name
+     * @param bool $force Force deletion of system prompts (use with caution)
+     * @return bool
+     * @throws \RuntimeException When trying to delete a system prompt without force
+     */
+    public function delete(string $name, bool $force = false): bool
     {
         $normalizedName = $this->normalizeName($name);
         $prompt = Prompt::findByName($normalizedName);
@@ -85,7 +116,24 @@ class PromptService
             return false;
         }
         
+        if ($prompt->isSystem() && !$force) {
+            throw new \RuntimeException('Cannot delete system prompt: ' . $name);
+        }
+        
         return $prompt->delete();
+    }
+    
+    /**
+     * Find a system prompt by name.
+     *
+     * @param string $name
+     * @return \Luinuxscl\Prompts\Models\Prompt|null
+     */
+    public function findSystemPrompt(string $name): ?Prompt
+    {
+        return Prompt::where('name', $this->normalizeName($name))
+            ->where('is_system', true)
+            ->first();
     }
 
     /**
