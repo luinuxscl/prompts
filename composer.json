@@ -2,7 +2,9 @@
     "name": "luinuxscl/prompts",
     "description": "Un paquete Laravel minimalista para gestionar y anidar prompts de texto",
     "type": "library",
+    "version": "1.0.0",
     "license": "MIT",
+    "keywords": ["laravel", "prompts", "templates", "text-processing"],
     "authors": [
         {
             "name": "LuinuxSCL",
@@ -28,6 +30,14 @@
             }
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "optimize-autoloader": true
+    }
 }
